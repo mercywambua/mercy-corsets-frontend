@@ -1,24 +1,38 @@
+// ===============================
+// BACKEND BASE URL (Render)
+// ===============================
+const API_BASE_URL = "https://mercy-corsets-backend.onrender.com";
+
+// ===============================
+// Example: Fetch products
+// ===============================
 async function loadProducts() {
   try {
-    const response = await fetch('http://localhost:5000/api/products');
+    const response = await fetch(`${API_BASE_URL}/products`);
     const products = await response.json();
-    const grid = document.querySelector('.grid');
-    grid.innerHTML = products.map(p => `
-      <div class="card">
-        <img src="http://localhost:5000/images/${p.img}" alt="${p.name}">
-        <div class="pad">
-          <h3>${p.name}</h3>
-          <div class="muted">${p.type}</div>
-          <div class="price">KSh ${p.price}</div>
-          <div class="mpesa">💬 <strong>Payment on Order:</strong> Pay via <strong>M-Pesa to 0796508569</strong>.</div>
-          <p>
-            <a class="btn" href="https://wa.me/254729218239?text=I'm interested in ${encodeURIComponent(p.name)}">Order on WhatsApp</a>
-          </p>
-        </div>
-      </div>
-    `).join('');
-  } catch (err) {
-    console.error("Could not load products:", err);
+
+    const container = document.getElementById("products");
+    container.innerHTML = "";
+
+    products.forEach(product => {
+      const item = document.createElement("div");
+      item.className = "product";
+
+      item.innerHTML = `
+        <img src="${API_BASE_URL}/${product.image}" alt="${product.name}">
+        <h3>${product.name}</h3>
+        <p>KES ${product.price}</p>
+      `;
+
+      container.appendChild(item);
+    });
+
+  } catch (error) {
+    console.error("Error loading products:", error);
   }
 }
-window.onload = loadProducts;
+
+// ===============================
+// Load products when page loads
+// ===============================
+document.addEventListener("DOMContentLoaded", loadProducts);
